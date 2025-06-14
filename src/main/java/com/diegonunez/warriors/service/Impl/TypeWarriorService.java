@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class TypeWarriorServiceImpl implements ITypeWarriorService {
+public class TypeWarriorService implements ITypeWarriorService {
 
     private final ITypeWarriorRepository typeWarriorRepository;
     private final IWarriorRepository warriorRepository;
 
-    public TypeWarriorServiceImpl( ITypeWarriorRepository typeWarriorRepository,IWarriorRepository warriorRepository ){
+    public TypeWarriorService(ITypeWarriorRepository typeWarriorRepository, IWarriorRepository warriorRepository ){
         this.typeWarriorRepository = typeWarriorRepository;
         this.warriorRepository = warriorRepository;
     }

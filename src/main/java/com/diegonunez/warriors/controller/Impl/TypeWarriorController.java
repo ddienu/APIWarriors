@@ -4,7 +4,7 @@ import com.diegonunez.warriors.common.ApiResponse;
 import com.diegonunez.warriors.controller.ITypeWarriorController;
 import com.diegonunez.warriors.dto.Request.TypeWarriorRequestDTO;
 import com.diegonunez.warriors.dto.Response.TypeWarriorResponseDTO;
-import com.diegonunez.warriors.service.Impl.TypeWarriorServiceImpl;
+import com.diegonunez.warriors.service.Impl.TypeWarriorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ import java.util.List;
 @RequestMapping(path = "v1/typeWarrior")
 public class TypeWarriorController implements ITypeWarriorController {
 
-    private final TypeWarriorServiceImpl typeWarriorService;
+    private final TypeWarriorService typeWarriorService;
 
-    public TypeWarriorController( TypeWarriorServiceImpl typeWarriorService ){
+    public TypeWarriorController( TypeWarriorService typeWarriorService ){
         this.typeWarriorService = typeWarriorService;
     }
 

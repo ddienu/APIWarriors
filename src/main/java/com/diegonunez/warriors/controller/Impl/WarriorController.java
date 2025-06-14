@@ -4,7 +4,7 @@ import com.diegonunez.warriors.controller.IWarriorController;
 import com.diegonunez.warriors.common.ApiResponse;
 import com.diegonunez.warriors.dto.Request.*;
 import com.diegonunez.warriors.dto.Response.WarriorResponseDTO;
-import com.diegonunez.warriors.service.Impl.WarriorServiceImpl;
+import com.diegonunez.warriors.service.Impl.WarriorService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,9 @@ import java.util.List;
 @RequestMapping(path = "/v1/warrior")
 public class WarriorController implements IWarriorController {
 
-    private final WarriorServiceImpl warriorService;
+    private final WarriorService warriorService;
 
-    public WarriorController ( WarriorServiceImpl warriorService){
+    public WarriorController ( WarriorService warriorService){
         this.warriorService = warriorService;
     }
         @Override

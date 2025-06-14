@@ -4,8 +4,7 @@
     import com.diegonunez.warriors.controller.IBreedWarriorController;
     import com.diegonunez.warriors.dto.Request.BreedWarriorRequestDTO;
     import com.diegonunez.warriors.dto.Response.BreedWarriorResponseDTO;
-    import com.diegonunez.warriors.entity.BreedWarrior;
-    import com.diegonunez.warriors.service.Impl.BreedWarriorServiceImpl;
+    import com.diegonunez.warriors.service.Impl.BreedWarriorService;
     import jakarta.validation.Valid;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
@@ -18,9 +17,9 @@
     @RequestMapping(path = "v1/breedWarrior")
     public class BreedWarriorController implements IBreedWarriorController {
 
-        private final BreedWarriorServiceImpl breedWarriorService;
+        private final BreedWarriorService breedWarriorService;
 
-        public BreedWarriorController( BreedWarriorServiceImpl breedWarriorService ){
+        public BreedWarriorController( BreedWarriorService breedWarriorService ){
             this.breedWarriorService = breedWarriorService;
         }
 

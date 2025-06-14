@@ -11,19 +11,17 @@ import com.diegonunez.warriors.repository.IBreedWarriorRepository;
 import com.diegonunez.warriors.repository.IWarriorRepository;
 import com.diegonunez.warriors.service.IBreedWarriorService;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.TransientObjectException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BreedWarriorServiceImpl implements IBreedWarriorService {
+public class BreedWarriorService implements IBreedWarriorService {
 
     private final IBreedWarriorRepository breedWarriorRepository;
     private final IWarriorRepository warriorRepository;
 
-    public BreedWarriorServiceImpl( IBreedWarriorRepository breedWarriorRepository, IWarriorRepository warriorRepository ){
+    public BreedWarriorService(IBreedWarriorRepository breedWarriorRepository, IWarriorRepository warriorRepository ){
         this.breedWarriorRepository = breedWarriorRepository;
         this.warriorRepository = warriorRepository;
     }

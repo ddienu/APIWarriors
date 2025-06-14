@@ -21,14 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
-public class WarriorServiceImpl implements IWarriorService {
+public class WarriorService implements IWarriorService {
     private final IWarriorRepository warriorRepository;
     private final IBreedWarriorRepository breedWarriorRepository;
     private final ITypePowerRepository typePowerRepository;
     private final ITypeWarriorRepository typeWarriorRepository;
 
-    public WarriorServiceImpl( IWarriorRepository warriorRepository, IBreedWarriorRepository breedWarriorRepository
-                               ,ITypePowerRepository typePowerRepository, ITypeWarriorRepository typeWarriorRepository){
+    public WarriorService(IWarriorRepository warriorRepository, IBreedWarriorRepository breedWarriorRepository
+                               , ITypePowerRepository typePowerRepository, ITypeWarriorRepository typeWarriorRepository){
         this.warriorRepository = warriorRepository;
         this.breedWarriorRepository = breedWarriorRepository;
         this.typePowerRepository = typePowerRepository;

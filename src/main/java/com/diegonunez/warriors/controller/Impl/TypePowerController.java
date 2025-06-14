@@ -4,7 +4,7 @@ import com.diegonunez.warriors.common.ApiResponse;
 import com.diegonunez.warriors.controller.ITypePowerController;
 import com.diegonunez.warriors.dto.Request.TypePowerRequestDTO;
 import com.diegonunez.warriors.dto.Response.TypePowerResponseDTO;
-import com.diegonunez.warriors.service.Impl.TypePowerServiceImpl;
+import com.diegonunez.warriors.service.Impl.TypePowerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ import java.util.List;
 @RequestMapping(path = "v1/typePower")
 public class TypePowerController implements ITypePowerController {
 
-    private final TypePowerServiceImpl typePowerService;
+    private final TypePowerService typePowerService;
 
-    public TypePowerController (TypePowerServiceImpl typePowerService){
+    public TypePowerController (TypePowerService typePowerService){
         this.typePowerService = typePowerService;
     }
 
