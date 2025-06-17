@@ -3,6 +3,7 @@ package com.diegonunez.warriors.dto.Request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class WarriorRequestDTO {
     @NotNull(message = "Warrior type cannot be null")
     private Integer typeOfWarrior;
     @NotNull(message = "Warrior's powers cannot be null")
+    @Size(min= 5, max = 5, message="The warrior must have 5 powers")
     private List<Integer> powers;
     @NotNull(message = "Warrior's breed cannot be null")
     private Integer breedWarrior;
