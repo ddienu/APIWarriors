@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface IRoleService {
     RoleResponseDTO addRole(RoleRequestDTO newRole);
-    List<RoleRequestDTO> getAllRoles();
-    RoleRequestDTO getRoleById(Integer roleId);
-    RoleRequestDTO updateRole(Integer roleId, RoleRequestDTO roleUpdated);
+    List<RoleResponseDTO> getAllRoles();
+    RoleResponseDTO getRoleById(Integer roleId);
+    RoleResponseDTO updateRole(Integer roleId, RoleRequestDTO roleUpdated);
     boolean deleteRole(Integer roleId);
 }
