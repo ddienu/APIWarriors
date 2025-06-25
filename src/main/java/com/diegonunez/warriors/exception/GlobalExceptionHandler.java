@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ApiResponse> entityNotFoundExceptionHandler(EntityNotFoundException e){
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ApiResponse(
                         e.getMessage(),
                         "Error"
