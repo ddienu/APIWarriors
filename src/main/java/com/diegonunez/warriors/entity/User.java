@@ -17,6 +17,9 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    //No args constructor
+    public User(){}
+
     public User(Integer userId, String email, String password, UserStatus userstatus, Role role){
         this.userId = userId;
         this.email = email;
