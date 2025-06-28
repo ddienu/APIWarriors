@@ -9,7 +9,7 @@ import java.util.List;
 public class PlayerRequestDTO {
 
     @NotNull(message = "Player nickname cannot be null")
-    @NotEmpty(message = "Player nickname cannoy be empty")
+    @NotEmpty(message = "Player nickname cannot be empty")
     private String nickname;
     @NotNull(message = "Player's warriors selected cannot be null")
     @Size(min = 5, max = 5, message = "The player must have five warriors")
