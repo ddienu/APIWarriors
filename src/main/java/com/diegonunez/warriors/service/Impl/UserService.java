@@ -1,5 +1,6 @@
 package com.diegonunez.warriors.service.Impl;
 
+import com.diegonunez.warriors.config.PasswordEncoderConfig;
 import com.diegonunez.warriors.dto.Request.UserRequestDTO;
 import com.diegonunez.warriors.dto.Response.RoleResponseDTO;
 import com.diegonunez.warriors.dto.Response.UserResponseDTO;
@@ -24,11 +25,14 @@ public class UserService implements IUserService {
     private final IUserRepository userRepository;
     private final IUserStatusRepository userStatusRepository;
     private final IRoleRepository roleRepository;
+    private final PasswordEncoderConfig passwordEncoder;
 
-    public UserService(IUserRepository userRepository, IUserStatusRepository userStatusRepository, IRoleRepository roleRepository){
+    public UserService(IUserRepository userRepository, IUserStatusRepository userStatusRepository, IRoleRepository roleRepository,
+                       PasswordEncoderConfig passwordEncoder){
         this.userRepository = userRepository;
         this.userStatusRepository = userStatusRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -86,7 +90,7 @@ public class UserService implements IUserService {
                 () -> new EntityNotFoundException("Role with ID: "+newUser.getRoleId()+" not founded")
         );
         createdUser.setEmail(newUser.getEmail());
-        createdUser.setPassword(newUser.getPassword());
+        createdUser.setPassword(hashPassword(newUser.getPassword()));
         createdUser.setUserStatus(userStatusFounded);
         createdUser.setRole(roleFounded);
 
@@ -165,5 +169,9 @@ public class UserService implements IUserService {
         userRepository.delete(userFounded);
 
         return true;
+    }
+
+    private String hashPassword(String userPassword){
+        return passwordEncoder.passwordEncoder().encode(userPassword);
     }
 }
