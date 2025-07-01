@@ -3,6 +3,7 @@ package com.diegonunez.warriors.exception;
 import com.diegonunez.warriors.common.ApiResponse;
 import com.diegonunez.warriors.exception.Unchecked.EmptyListException;
 import com.diegonunez.warriors.exception.Unchecked.EntityInUseException;
+import com.diegonunez.warriors.exception.Unchecked.InvalidCredentialsException;
 import com.diegonunez.warriors.exception.Unchecked.NoChangesMadeException;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.Response;
@@ -80,6 +81,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityInUseException.class)
     public ResponseEntity<ApiResponse> entityInUseExceptionhandler(EntityInUseException e){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                new ApiResponse(
+                        e.getMessage(),
+                        null
+                )
+        );
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiResponse> invalidCretendialsExceptionHandler(InvalidCredentialsException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 new ApiResponse(
                         e.getMessage(),
                         null

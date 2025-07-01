@@ -1,6 +1,5 @@
 package com.diegonunez.warriors.service.Impl;
 
-import com.diegonunez.warriors.config.PasswordEncoderConfig;
 import com.diegonunez.warriors.dto.Request.UserRequestDTO;
 import com.diegonunez.warriors.dto.Response.RoleResponseDTO;
 import com.diegonunez.warriors.dto.Response.UserResponseDTO;
@@ -13,6 +12,7 @@ import com.diegonunez.warriors.repository.IUserRepository;
 import com.diegonunez.warriors.repository.IUserStatusRepository;
 import com.diegonunez.warriors.service.IUserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +25,10 @@ public class UserService implements IUserService {
     private final IUserRepository userRepository;
     private final IUserStatusRepository userStatusRepository;
     private final IRoleRepository roleRepository;
-    private final PasswordEncoderConfig passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(IUserRepository userRepository, IUserStatusRepository userStatusRepository, IRoleRepository roleRepository,
-                       PasswordEncoderConfig passwordEncoder){
+                       PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.userStatusRepository = userStatusRepository;
         this.roleRepository = roleRepository;
@@ -172,6 +172,6 @@ public class UserService implements IUserService {
     }
 
     private String hashPassword(String userPassword){
-        return passwordEncoder.passwordEncoder().encode(userPassword);
+        return passwordEncoder.encode(userPassword);
     }
 }
