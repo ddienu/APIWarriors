@@ -27,7 +27,7 @@ public class CustomUserDetails implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User userFounded = userRepository.findByEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("User with email: "+email+" not found")
+                () -> new EntityNotFoundException("Invalid email or password, check your credentials")
         );
 
         return new org.springframework.security.core.userdetails.User(
