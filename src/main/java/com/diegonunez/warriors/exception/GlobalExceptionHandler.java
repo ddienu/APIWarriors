@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 new ApiResponse(
                         e.getMessage(),
-                        null
+                        "Error"
                 )
         );
     }

@@ -13,6 +13,9 @@ import com.diegonunez.warriors.repository.IUserRepository;
 import com.diegonunez.warriors.repository.IUserStatusRepository;
 import com.diegonunez.warriors.service.IAuthService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +26,18 @@ public class AuthService implements IAuthService {
     private final PasswordEncoder passwordEncoder;
     private final IRoleRepository roleRepository;
     private final IUserStatusRepository userStatusRepository;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     public AuthService(IUserRepository userRepository, PasswordEncoder passwordEncoder,
-                       IRoleRepository roleRepository, IUserStatusRepository userStatusRepository){
+                       IRoleRepository roleRepository, IUserStatusRepository userStatusRepository, JwtService jwtService,
+                       AuthenticationManager authenticationManager){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
         this.userStatusRepository = userStatusRepository;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -49,18 +57,29 @@ public class AuthService implements IAuthService {
 
     @Override
     public AuthResponseDTO login(LoginRequestDTO loginPayload) {
-        User userFounded = userRepository.findByEmail(loginPayload.getEmail()).orElseThrow(
+/*        User userFounded = userRepository.findByEmail(loginPayload.getEmail()).orElseThrow(
                 () -> new EntityNotFoundException("User with email: "+loginPayload.getEmail()+" not found")
         );
 
         Boolean passwordMatch = matchesPassword(loginPayload.getPassword(), userFounded.getPassword());
         if(Boolean.FALSE.equals(passwordMatch)){
             throw new InvalidCredentialsException("Invalid credentials, please check your email or password");
+        }*/
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginPayload.getEmail(),
+                            loginPayload.getPassword()
+                    )
+            );
+        }catch(BadCredentialsException e){
+            throw new InvalidCredentialsException("Invalid credentials, please check your email or password");
         }
 
+
         return new AuthResponseDTO(
-                userFounded.getEmail(),
-                "JWT_TOKEN_HERE"
+                loginPayload.getEmail(),
+                jwtService.getToken(loginPayload)
         );
 
     }
