@@ -39,10 +39,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      if(authHeader == null || !authHeader.startsWith("Bearer ")){
+/*            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\": \"Authorization token is missing or invalid format\"}");
+            response.getWriter().write("{\"message\": \"Authorization token is missing or invalid format\"}");*/
+            filterChain.doFilter(request, response);
             return;
         }
         try{
