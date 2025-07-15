@@ -10,6 +10,7 @@ import java.util.List;
 public interface IPlayerController {
     ResponseEntity<ApiResponse<PlayerResponseDTO>> getPlayerById(Integer playerId);
     ResponseEntity<ApiResponse<List<PlayerResponseDTO>>> getAllPlayers();
+    ResponseEntity<ApiResponse<PlayerResponseDTO>> getPlayerByUserId(Integer userId);
     ResponseEntity<ApiResponse<PlayerResponseDTO>> createPlayer(PlayerRequestDTO newPlayer);
     ResponseEntity<ApiResponse<PlayerResponseDTO>> updatePlayer(Integer playerId, PlayerRequestDTO playerUpdated);
     ResponseEntity<ApiResponse<Boolean>> deletePlayer(Integer playerId);

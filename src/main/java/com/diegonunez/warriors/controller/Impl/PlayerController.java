@@ -8,6 +8,7 @@ import com.diegonunez.warriors.service.Impl.PlayerService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class PlayerController implements IPlayerController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public ResponseEntity<ApiResponse<List<PlayerResponseDTO>>> getAllPlayers() {
         List<PlayerResponseDTO> serviceResponse = playerService.findAllPlayers();
@@ -44,6 +46,19 @@ public class PlayerController implements IPlayerController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ApiResponse<>(
                         "Players retrieved successfully",
+                        serviceResponse
+                )
+        );
+    }
+
+    @GetMapping(path = "/user/{userId}")
+    @Override
+    public ResponseEntity<ApiResponse<PlayerResponseDTO>> getPlayerByUserId(@PathVariable Integer userId) {
+        PlayerResponseDTO serviceResponse = playerService.findPlayerByUserId(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ApiResponse<>(
+                        "Player of user with ID: "+userId+" retrieved successfully",
                         serviceResponse
                 )
         );

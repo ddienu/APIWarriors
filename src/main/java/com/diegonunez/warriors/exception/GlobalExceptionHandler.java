@@ -1,10 +1,7 @@
 package com.diegonunez.warriors.exception;
 
 import com.diegonunez.warriors.common.ApiResponse;
-import com.diegonunez.warriors.exception.Unchecked.EmptyListException;
-import com.diegonunez.warriors.exception.Unchecked.EntityInUseException;
-import com.diegonunez.warriors.exception.Unchecked.InvalidCredentialsException;
-import com.diegonunez.warriors.exception.Unchecked.NoChangesMadeException;
+import com.diegonunez.warriors.exception.Unchecked.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.Response;
 import org.hibernate.TransientObjectException;
@@ -87,10 +84,19 @@ public class GlobalExceptionHandler {
                 )
         );
     }
-
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ApiResponse> invalidCretendialsExceptionHandler(InvalidCredentialsException e){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                new ApiResponse(
+                        e.getMessage(),
+                        "Error"
+                )
+        );
+    }
+
+    @ExceptionHandler(PlayerException.class)
+    public ResponseEntity<ApiResponse> playerExceptionHandler(PlayerException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new ApiResponse(
                         e.getMessage(),
                         "Error"

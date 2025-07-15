@@ -3,6 +3,7 @@ package com.diegonunez.warriors.service.Impl;
 import com.diegonunez.warriors.dto.Request.PlayerRequestDTO;
 import com.diegonunez.warriors.dto.Response.*;
 import com.diegonunez.warriors.entity.Player;
+import com.diegonunez.warriors.entity.User;
 import com.diegonunez.warriors.entity.Warrior;
 import com.diegonunez.warriors.repository.IPlayerRepository;
 import com.diegonunez.warriors.repository.IUserRepository;
@@ -134,6 +135,15 @@ public class PlayerService implements IPlayerService {
                         )
                 )
         ).toList();
+    }
+
+    @Override
+    public PlayerResponseDTO findPlayerByUserId(Integer userId) {
+        Integer playerId = playerRepository.getPlayerIdByUserId(userId).orElseThrow(
+                () -> new EntityNotFoundException("The user does not have a player associate")
+        );
+
+        return findPlayerById(playerId);
     }
 
     @Transactional

@@ -8,6 +8,7 @@ import java.util.List;
 public interface IPlayerService {
     PlayerResponseDTO findPlayerById(Integer playerId);
     List<PlayerResponseDTO> findAllPlayers();
+    PlayerResponseDTO findPlayerByUserId(Integer userId);
     PlayerResponseDTO createPlayer(PlayerRequestDTO newPlayer);
     PlayerResponseDTO updatePlayer(Integer playerId, PlayerRequestDTO playerUpdated);
     Boolean deletePlayer(Integer playerId);
