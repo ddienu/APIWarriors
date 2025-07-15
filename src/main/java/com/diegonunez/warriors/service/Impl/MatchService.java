@@ -1,12 +1,15 @@
 package com.diegonunez.warriors.service.Impl;
 
 import com.diegonunez.warriors.dto.Match.request.MatchRequestDTO;
+import com.diegonunez.warriors.dto.Match.request.MatchRequestWinnerDTO;
 import com.diegonunez.warriors.dto.Match.response.MatchPlayerResponseDTO;
 import com.diegonunez.warriors.dto.Match.response.MatchResponseDTO;
 import com.diegonunez.warriors.dto.Match.response.MatchUserResponseDTO;
+import com.diegonunez.warriors.dto.Request.JoinMatchRequestDTO;
 import com.diegonunez.warriors.dto.Response.*;
 import com.diegonunez.warriors.entity.Match;
 import com.diegonunez.warriors.entity.Player;
+import com.diegonunez.warriors.exception.Unchecked.PlayerException;
 import com.diegonunez.warriors.repository.IMatchRepository;
 import com.diegonunez.warriors.repository.IPlayerRepository;
 import com.diegonunez.warriors.repository.IUserRepository;
@@ -15,6 +18,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -40,6 +45,7 @@ public class MatchService implements IMatchService {
 
         return new MatchResponseDTO(
                 matchFounded.getId(),
+                matchFounded.getName(),
                 matchFounded.getCode(),
                 matchFounded.getActive(),
                 matchFounded.getCreatedAt(),
@@ -61,7 +67,8 @@ public class MatchService implements IMatchService {
                             matchFounded.getWinner().getNickname()
                     )
                 :
-                    null
+                    null,
+                matchFounded.getActualPlayers()
         );
     }
 
@@ -71,6 +78,7 @@ public class MatchService implements IMatchService {
         return matchRepository.findAll().stream().map(
                 match -> new MatchResponseDTO(
                         match.getId(),
+                        match.getName(),
                         match.getCode(),
                         match.getActive(),
                         match.getCreatedAt(),
@@ -91,9 +99,49 @@ public class MatchService implements IMatchService {
                                 match.getWinner().getNickname()
                         )
 
-                                : null
+                                : null,
+                        match.getActualPlayers()
                 )
         ).toList();
+    }
+
+    @Override
+    public String joinMatch(JoinMatchRequestDTO joinMatchPayload) {
+        Match matchToJoin = matchRepository.findById(joinMatchPayload.getMatchId()).orElseThrow(
+                () -> new EntityNotFoundException("Match not found")
+        );
+
+        Player playerFounded = playerRepository.findById(joinMatchPayload.getPlayerId()).orElseThrow(
+                () -> new EntityNotFoundException("Player not found")
+        );
+
+        Player botPlayer = playerRepository.findById(12).orElseThrow(
+                () -> new EntityNotFoundException("Bot player not found")
+        );
+
+        if(!matchToJoin.getCode().equals(joinMatchPayload.getMatchCode())){
+            throw new PlayerException("Incorrect provided code");
+        }
+
+        List<Player> currentPlayers = matchToJoin.getPlayers();
+
+        if (currentPlayers == null) {
+            currentPlayers = new ArrayList<>();
+        }
+
+        if (currentPlayers.contains(playerFounded)) {
+            throw new PlayerException("Player is already in the match");
+        }
+
+        currentPlayers.add(playerFounded);
+        currentPlayers.add(botPlayer);
+
+        matchToJoin.setPlayers(currentPlayers);
+        matchToJoin.setActualPlayers(matchToJoin.getActualPlayers()+2);
+
+        matchRepository.save(matchToJoin);
+
+        return "Player joined the match successfully";
     }
 
     @Override
@@ -105,18 +153,22 @@ public class MatchService implements IMatchService {
                 () -> new EntityNotFoundException("User with ID: "+newMatch.getCreatedByUserId()+" not found")
         ));
         matchToSave.setCreatedAt(LocalDateTime.now());
-        matchToSave.setPlayers(newMatch.getPlayersId().stream().map(
+        matchToSave.setPlayers(null);
+        matchToSave.setName(newMatch.getName());
+/*        matchToSave.setPlayers(newMatch.getPlayersId().stream().map(
                 playerId -> playerRepository.findById(playerId).orElseThrow(
                         () -> new EntityNotFoundException("Player with ID: "+playerId+" not found")
                 )
-        ).collect(Collectors.toList()));
+        ).collect(Collectors.toList()));*/
         matchToSave.setMaxPlayers(2);
+        matchToSave.setActualPlayers(0);
         matchToSave.setWinner(null);
 
         matchRepository.save(matchToSave);
 
         return new MatchResponseDTO(
                 matchToSave.getId(),
+                matchToSave.getName(),
                 matchToSave.getCode(),
                 matchToSave.getActive(),
                 matchToSave.getCreatedAt(),
@@ -124,35 +176,47 @@ public class MatchService implements IMatchService {
                         matchToSave.getCreatedBy().getUserId(),
                         matchToSave.getCreatedBy().getEmail()
                 ),
-                matchToSave.getPlayers().stream().map(
+                /*matchToSave.getPlayers().stream().map(
                         player -> new MatchPlayerResponseDTO(
                                 player.getPlayerId(),
                                 player.getNickname()
                         )
-                ).toList(),
+                ).toList(),*/
+                null,
                 matchToSave.getMaxPlayers(),
-                null
+                null,
+                matchToSave.getActualPlayers()
         );
     }
 
     @Override
-    public MatchResponseDTO setMatchWinner(Integer matchId, Integer playerId) {
+    public MatchResponseDTO simulateBattle(MatchRequestWinnerDTO matchPayload) {
 
-        Match matchFounded = matchRepository.findById(matchId).orElseThrow(
-                () -> new EntityNotFoundException("Match with ID: "+matchId+" not found")
+        Match matchFounded = matchRepository.findById(matchPayload.getMatchId()).orElseThrow(
+                () -> new EntityNotFoundException("Match with ID: "+matchPayload.getMatchId()+" not found")
         );
 
-        Player playerFounded = playerRepository.findById(playerId).orElseThrow(
-                () -> new EntityNotFoundException("Player with IDL: "+playerId)
+        Player playerOne = playerRepository.findById(matchPayload.getPlayersIds()[0]).orElseThrow(
+                () -> new EntityNotFoundException("Player with ID: "+matchPayload.getPlayersIds()[0]+ "not found")
+        );
+
+        Player playerTwo = playerRepository.findById(matchPayload.getPlayersIds()[1]).orElseThrow(
+                () -> new EntityNotFoundException("Player with ID: "+matchPayload.getPlayersIds()[1]+ "not found")
         );
 
         matchFounded.setActive(Boolean.FALSE);
-        matchFounded.setWinner(playerFounded);
+        Integer playerWinnerId = generateRandomWinner(playerOne.getPlayerId(), playerTwo.getPlayerId());
+        if(playerWinnerId.equals(playerOne.getPlayerId())){
+            matchFounded.setWinner(playerOne);
+        }else{
+            matchFounded.setWinner(playerTwo);
+        }
 
         matchRepository.save(matchFounded);
 
         return new MatchResponseDTO(
                 matchFounded.getId(),
+                matchFounded.getName(),
                 matchFounded.getCode(),
                 matchFounded.getActive(),
                 matchFounded.getCreatedAt(),
@@ -170,7 +234,8 @@ public class MatchService implements IMatchService {
                 new MatchPlayerResponseDTO(
                         matchFounded.getWinner().getPlayerId(),
                         matchFounded.getWinner().getNickname()
-                )
+                ),
+                matchFounded.getActualPlayers()
         );
 
     }
@@ -201,5 +266,10 @@ public class MatchService implements IMatchService {
             sb.append(chars[result]);
         }
         return sb.toString();
+    }
+
+    private Integer generateRandomWinner(Integer playerOne, Integer playerTwo){
+        Random random = new Random();
+        return random.nextBoolean() ? playerOne : playerTwo;
     }
 }

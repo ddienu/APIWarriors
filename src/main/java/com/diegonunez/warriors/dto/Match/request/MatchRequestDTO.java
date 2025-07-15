@@ -1,5 +1,6 @@
 package com.diegonunez.warriors.dto.Match.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
@@ -7,12 +8,15 @@ import java.util.List;
 public class MatchRequestDTO {
     @NotNull(message = "CreatedBy id cannot be null")
     private Integer createdByUserId;
-    @NotNull(message = "The player's ids cannot be null")
-    private List<Integer> playersId;
+    @NotNull(message = "Match's name cannot be null")
+    @NotEmpty(message = "Match's name cannot be empty")
+    private String name;
+    /*@NotNull(message = "The player's ids cannot be null")
+    private List<Integer> playersId;*/
 
-    public MatchRequestDTO( Integer createdByUserId, List<Integer> playersId) {
+    public MatchRequestDTO( Integer createdByUserId, String name) {
         this.createdByUserId = createdByUserId;
-        this.playersId = playersId;
+        this.name = name;
     }
     public Integer getCreatedByUserId() {
         return createdByUserId;
@@ -22,11 +26,11 @@ public class MatchRequestDTO {
         this.createdByUserId = createdByUserId;
     }
 
-    public List<Integer> getPlayersId() {
-        return playersId;
+    public String getName() {
+        return name;
     }
 
-    public void setPlayersId(List<Integer> playersId) {
-        this.playersId = playersId;
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -3,7 +3,9 @@ package com.diegonunez.warriors.controller.Impl;
 import com.diegonunez.warriors.common.ApiResponse;
 import com.diegonunez.warriors.controller.IMatchController;
 import com.diegonunez.warriors.dto.Match.request.MatchRequestDTO;
+import com.diegonunez.warriors.dto.Match.request.MatchRequestWinnerDTO;
 import com.diegonunez.warriors.dto.Match.response.MatchResponseDTO;
+import com.diegonunez.warriors.dto.Request.JoinMatchRequestDTO;
 import com.diegonunez.warriors.service.Impl.MatchService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -62,14 +64,14 @@ public class MatchController implements IMatchController {
         );
     }
 
-    @PutMapping(path = "/{matchId}/winner/{playerId}")
+    @PostMapping(path = "/winner")
     @Override
-    public ResponseEntity<ApiResponse<MatchResponseDTO>> setMatchWinner(@PathVariable Integer matchId, @PathVariable Integer playerId) {
-        MatchResponseDTO serviceResponse = matchService.setMatchWinner(matchId, playerId);
+    public ResponseEntity<ApiResponse<MatchResponseDTO>> simulateBattle(@Valid @RequestBody MatchRequestWinnerDTO matchPayload) {
+        MatchResponseDTO serviceResponse = matchService.simulateBattle(matchPayload);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ApiResponse<>(
-                        "Match with ID: "+matchId+" updated successfully",
+                        "Match's winner set successfully",
                         serviceResponse
                 )
         );
@@ -84,6 +86,18 @@ public class MatchController implements IMatchController {
                 new ApiResponse<>(
                         "Match with ID: "+matchId+" deleted successfully",
                         serviceResponse
+                )
+        );
+    }
+
+    @PostMapping(path = "/join")
+    @Override
+    public ResponseEntity<ApiResponse<String>> joinMatch(@Valid @RequestBody JoinMatchRequestDTO joinMatchPayload) {
+        String serviceResponse = matchService.joinMatch(joinMatchPayload);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ApiResponse<>(
+                        serviceResponse,
+                        null
                 )
         );
     }

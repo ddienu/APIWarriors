@@ -10,6 +10,7 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String name;
     @Column(unique = true)
     private String code;
     private Boolean isActive;
@@ -25,14 +26,16 @@ public class Match {
     )
     private List<Player> players;
     private Integer maxPlayers;
+    private Integer actualPlayers;
     @ManyToOne
     @JoinColumn(name = "winner_id")
     private Player winner;
 
 
     public Match(){}
-    public Match(Integer id, String code, Boolean isActive, LocalDateTime createdAt, User createdBy, List<Player> players, Integer maxPlayers, Player winner) {
+    public Match(Integer id, String name, String code, Boolean isActive, LocalDateTime createdAt, User createdBy, List<Player> players, Integer maxPlayers, Player winner, Integer actualPlayers) {
         this.id = id;
+        this.name = name;
         this.code = code;
         this.isActive = isActive;
         this.createdAt = createdAt;
@@ -40,6 +43,7 @@ public class Match {
         this.players = players;
         this.maxPlayers = maxPlayers;
         this.winner = winner;
+        this.actualPlayers = actualPlayers;
     }
 
     public Integer getId() {
@@ -104,5 +108,20 @@ public class Match {
 
     public void setWinner(Player winner) {
         this.winner = winner;
+    }
+
+    public Integer getActualPlayers() {
+        return actualPlayers;
+    }
+    public void setActualPlayers(Integer actualPlayers) {
+        this.actualPlayers = actualPlayers;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
