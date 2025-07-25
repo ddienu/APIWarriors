@@ -1,17 +1,12 @@
 package com.diegonunez.warriors.service;
 
-import com.diegonunez.warriors.common.ApiResponse;
 import com.diegonunez.warriors.dto.Request.*;
 import com.diegonunez.warriors.dto.Response.WarriorResponseDTO;
-import com.diegonunez.warriors.entity.BreedWarrior;
-import com.diegonunez.warriors.entity.TypePower;
-import com.diegonunez.warriors.entity.TypeWarrior;
-import com.diegonunez.warriors.entity.Warrior;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface IWarriorService {
-    List<WarriorResponseDTO> getAllWarriors();
+    Page<WarriorResponseDTO> getAllWarriors(Pageable pageable);
     WarriorResponseDTO getWarriorById(Integer warriorId);
     WarriorResponseDTO createWarrior(WarriorRequestDTO warrior);
     WarriorResponseDTO updateWarriorBasics(Integer warriorId, WarriorBasicsUpdateDTO warriorBasicsUpdated);

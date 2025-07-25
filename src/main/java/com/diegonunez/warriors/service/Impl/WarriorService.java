@@ -15,10 +15,14 @@ import com.diegonunez.warriors.repository.ITypeWarriorRepository;
 import com.diegonunez.warriors.repository.IWarriorRepository;
 import com.diegonunez.warriors.service.IWarriorService;
 import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class WarriorService implements IWarriorService {
@@ -35,18 +39,13 @@ public class WarriorService implements IWarriorService {
         this.typeWarriorRepository = typeWarriorRepository;
     }
     @Override
-    public List<WarriorResponseDTO> getAllWarriors() {
+    public Page<WarriorResponseDTO> getAllWarriors(Pageable pageable) {
 
-        List<Warrior> warriorListDB = warriorRepository.findAll();
-        List<WarriorResponseDTO> warriorResponseList = warriorListDB.stream().map(
+        Page<Warrior> page = warriorRepository.findAll(pageable);
+
+        return page.map(
                 WarriorMapper::toDTO
-        ).toList();
-
-        if( warriorResponseList.isEmpty()){
-            throw new EmptyListException("Warriors not found");
-        }
-
-        return warriorResponseList;
+        );
     }
 
     @Override

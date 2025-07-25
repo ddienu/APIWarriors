@@ -6,6 +6,9 @@ import com.diegonunez.warriors.dto.Request.*;
 import com.diegonunez.warriors.dto.Response.WarriorResponseDTO;
 import com.diegonunez.warriors.service.Impl.WarriorService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +27,9 @@ public class WarriorController implements IWarriorController {
     }
         @Override
         @GetMapping
-        public ResponseEntity<ApiResponse<List<WarriorResponseDTO>>> getAllWarriors() {
-            List<WarriorResponseDTO> response = warriorService.getAllWarriors();
+        public ResponseEntity<ApiResponse<Page<WarriorResponseDTO>>> getAllWarriors(
+                @PageableDefault(page = 0, size = 8) Pageable pageable) {
+            Page<WarriorResponseDTO> response = warriorService.getAllWarriors(pageable);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ApiResponse<>(
