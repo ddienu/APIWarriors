@@ -15,6 +15,7 @@ import com.diegonunez.warriors.service.IAuthService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,9 @@ public class AuthService implements IAuthService {
         }catch(BadCredentialsException e){
             throw new InvalidCredentialsException("Invalid credentials, please check your email or password");
         }
+        /*catch(InternalAuthenticationServiceException e){
+            throw new InvalidCredentialsException("Invalid credentials, please check your email or password");
+        }*/
 
 
         return new AuthResponseDTO(
