@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoChangesMadeException.class)
     public ResponseEntity<ApiResponse> noChangesMadeExceptionHandler(NoChangesMadeException e){
-        return ResponseEntity.status(HttpStatus.OK).body(
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new ApiResponse(
                         e.getMessage(),
                         null
