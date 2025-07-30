@@ -12,6 +12,7 @@ public class Warrior {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer warriorId;
+    @Column(unique = true)
     private String warriorName;
     private Double warriorLife;
     private Double warriorEnergy;
