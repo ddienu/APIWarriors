@@ -3,9 +3,14 @@ package com.diegonunez.warriors.controller.Impl;
 import com.diegonunez.warriors.common.ApiResponse;
 import com.diegonunez.warriors.controller.IPlayerController;
 import com.diegonunez.warriors.dto.Request.PlayerRequestDTO;
+import com.diegonunez.warriors.dto.Response.PageResponse;
 import com.diegonunez.warriors.dto.Response.PlayerResponseDTO;
+import com.diegonunez.warriors.dto.Response.WarriorResponseDTO;
 import com.diegonunez.warriors.service.Impl.PlayerService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,15 +43,29 @@ public class PlayerController implements IPlayerController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @Override
-    public ResponseEntity<ApiResponse<List<PlayerResponseDTO>>> getAllPlayers() {
-        List<PlayerResponseDTO> serviceResponse = playerService.findAllPlayers();
+    public ResponseEntity<ApiResponse<PageResponse<PlayerResponseDTO>>> getAllPlayers(
+            @PageableDefault(page = 0, size = 10)
+            Pageable pageable,
+            @RequestParam(required = false) String nickname) {
+
+        Page<PlayerResponseDTO> serviceResponse;
+        PageResponse<PlayerResponseDTO> pageResponse;
+
+        if(nickname == null || nickname.isEmpty()){
+            serviceResponse = playerService.findAllPlayers(pageable);
+        }else{
+            serviceResponse = playerService.findByNickname(nickname, pageable);
+        }
+
+        pageResponse =  new PageResponse<>(serviceResponse);
+
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ApiResponse<>(
                         "Players retrieved successfully",
-                        serviceResponse
+                        pageResponse
                 )
         );
     }
