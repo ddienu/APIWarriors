@@ -1,6 +1,8 @@
 package com.diegonunez.warriors.repository;
 
 import com.diegonunez.warriors.entity.Player;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,4 +15,6 @@ public interface IPlayerRepository extends JpaRepository<Player, Integer> {
 
     @Query(value = "SELECT P.player_id FROM Player P INNER JOIN Users U ON U.user_id = P.user_id WHERE U.user_id = ?", nativeQuery = true)
     Optional<Integer> getPlayerIdByUserId(Integer userId);
+
+    Page<Player> findByNicknameContainingIgnoreCase(String name, Pageable pageable);
 }
