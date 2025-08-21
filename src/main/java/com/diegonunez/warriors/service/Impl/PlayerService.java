@@ -10,6 +10,8 @@ import com.diegonunez.warriors.repository.IUserRepository;
 import com.diegonunez.warriors.repository.IWarriorRepository;
 import com.diegonunez.warriors.service.IPlayerService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,8 +87,66 @@ public class PlayerService implements IPlayerService {
     }
 
     @Override
-    public List<PlayerResponseDTO> findAllPlayers() {
-        return playerRepository.findAll().stream().map(
+    public Page<PlayerResponseDTO> findAllPlayers(Pageable pageable) {
+
+        Page<Player> page = playerRepository.findAll(pageable);
+
+        return page.map(
+            player -> new PlayerResponseDTO(
+                    player.getPlayerId(),
+                    player.getNickname(),
+                    player.getWarriorsSelected().stream().map(
+                            warrior -> new WarriorResponseDTO(
+                                    warrior.getWarriorId(),
+                                    warrior.getWarriorName(),
+                                    warrior.getWarriorLife(),
+                                    warrior.getWarriorEnergy(),
+                                    new TypeWarriorResponseDTO(
+                                            warrior.getTypeOfWarrior().getTypeWarriorId(),
+                                            warrior.getTypeOfWarrior().getTypeWarriorName(),
+                                            warrior.getTypeOfWarrior().getTypeWarriorDescription()
+                                    ),
+                                    warrior.getTypeOfPower().stream().map(
+                                            power -> new TypePowerResponseDTO(
+                                                    power.getPowerId(),
+                                                    power.getPowerName(),
+                                                    power.getPowerDamage(),
+                                                    power.getPowerEnergyConsumed(),
+                                                    power.getPowerDescription()
+                                            )
+                                    ).toList(),
+                                    new BreedWarriorResponseDTO(
+                                            warrior.getBreedWarrior().getBreedId(),
+                                            warrior.getBreedWarrior().getBreedName(),
+                                            warrior.getBreedWarrior().getBreedDescription(),
+                                            warrior.getBreedWarrior().getBreedResistance()
+                                    )
+                            )
+                    ).toList(),
+                    new UserResponseDTO(
+                            player.getUser().getUserId(),
+                            player.getUser().getEmail(),
+                            player.getUser().getPassword(),
+                            new UserStatusResponseDTO(
+                                    player.getUser().getUserStatus().getId(),
+                                    player.getUser().getUserStatus().getName(),
+                                    player.getUser().getUserStatus().getDescription()
+                            ),
+                            new RoleResponseDTO(
+                                    player.getUser().getRole().getId(),
+                                    player.getUser().getRole().getName(),
+                                    player.getUser().getRole().getDescription()
+                            )
+                    )
+                )
+            );
+    }
+
+    @Override
+    public Page<PlayerResponseDTO> findByNickname(String nickname, Pageable pageable) {
+        Page<Player> foundedPlayers = playerRepository.findByNicknameContainingIgnoreCase(nickname, pageable);
+
+        return foundedPlayers.map(
                 player -> new PlayerResponseDTO(
                         player.getPlayerId(),
                         player.getNickname(),
@@ -134,7 +194,7 @@ public class PlayerService implements IPlayerService {
                                 )
                         )
                 )
-        ).toList();
+        );
     }
 
     @Override
