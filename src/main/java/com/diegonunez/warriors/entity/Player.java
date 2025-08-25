@@ -21,16 +21,23 @@ public class Player {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+    private Integer points;
+    private Integer gamesWon;
+    private Integer gamesLost;
 
     //No args constructor
     public Player(){}
 
     //Full args constructor
-    public Player(Integer playerId, String nickname, List<Warrior> warriorsSelected, User user){
+    public Player(Integer playerId, String nickname, List<Warrior> warriorsSelected, User user, Integer points,
+                  Integer gamesWon, Integer gamesLost ){
         this.playerId = playerId;
         this.nickname = nickname;
         this.warriorsSelected = warriorsSelected;
         this.user = user;
+        this.points = points;
+        this.gamesWon = gamesWon;
+        this.gamesLost = gamesLost;
     }
 
     //Getters and Setter
@@ -64,5 +71,29 @@ public class Player {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
+
+    public Integer getGamesWon() {
+        return gamesWon;
+    }
+
+    public void setGamesWon(Integer gamesWon) {
+        this.gamesWon = gamesWon;
+    }
+
+    public Integer getGamesLost() {
+        return gamesLost;
+    }
+
+    public void setGamesLost(Integer gamesLost) {
+        this.gamesLost = gamesLost;
     }
 }
