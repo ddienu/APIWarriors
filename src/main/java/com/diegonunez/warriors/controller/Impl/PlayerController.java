@@ -83,6 +83,21 @@ public class PlayerController implements IPlayerController {
         );
     }
 
+    @GetMapping(path = "/points")
+    @Override
+    public ResponseEntity<ApiResponse<PageResponse<PlayerResponseDTO>>> getPlayersOrderByPoints(
+            @PageableDefault(page = 0, size = 15) Pageable pageable) {
+        Page<PlayerResponseDTO> serviceResponse = playerService.findPlayersOrderByPoints(pageable);
+        PageResponse<PlayerResponseDTO> pageResponse = new PageResponse<>(serviceResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ApiResponse<>(
+                        "Players order by points retrieved successfully",
+                        pageResponse
+                )
+        );
+    }
+
     @PostMapping
     @Override
     public ResponseEntity<ApiResponse<PlayerResponseDTO>> createPlayer(@Valid @RequestBody PlayerRequestDTO newPlayer) {
