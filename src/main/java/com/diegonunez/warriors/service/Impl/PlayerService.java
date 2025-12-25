@@ -25,7 +25,7 @@ public class PlayerService implements IPlayerService {
     private final IWarriorRepository warriorRepository;
     private final IUserRepository userRepository;
 
-    public PlayerService(IPlayerRepository playerRepository, IWarriorRepository warriorRepository,IUserRepository userRepository ){
+    public PlayerService(IPlayerRepository playerRepository, IWarriorRepository warriorRepository, IUserRepository userRepository) {
         this.playerRepository = playerRepository;
         this.warriorRepository = warriorRepository;
         this.userRepository = userRepository;
@@ -34,7 +34,7 @@ public class PlayerService implements IPlayerService {
     @Override
     public PlayerResponseDTO findPlayerById(Integer playerId) {
         Player playerFounded = playerRepository.findById(playerId).orElseThrow(
-                () -> new EntityNotFoundException("Player with ID: "+playerId+" not founded")
+                () -> new EntityNotFoundException("Player with ID: " + playerId + " not founded")
         );
 
         return new PlayerResponseDTO(
@@ -82,7 +82,10 @@ public class PlayerService implements IPlayerService {
                                 playerFounded.getUser().getRole().getName(),
                                 playerFounded.getUser().getRole().getDescription()
                         )
-                )
+                ),
+                playerFounded.getPoints(),
+                playerFounded.getGamesWon(),
+                playerFounded.getGamesLost()
         );
     }
 
@@ -92,54 +95,57 @@ public class PlayerService implements IPlayerService {
         Page<Player> page = playerRepository.findAll(pageable);
 
         return page.map(
-            player -> new PlayerResponseDTO(
-                    player.getPlayerId(),
-                    player.getNickname(),
-                    player.getWarriorsSelected().stream().map(
-                            warrior -> new WarriorResponseDTO(
-                                    warrior.getWarriorId(),
-                                    warrior.getWarriorName(),
-                                    warrior.getWarriorLife(),
-                                    warrior.getWarriorEnergy(),
-                                    new TypeWarriorResponseDTO(
-                                            warrior.getTypeOfWarrior().getTypeWarriorId(),
-                                            warrior.getTypeOfWarrior().getTypeWarriorName(),
-                                            warrior.getTypeOfWarrior().getTypeWarriorDescription()
-                                    ),
-                                    warrior.getTypeOfPower().stream().map(
-                                            power -> new TypePowerResponseDTO(
-                                                    power.getPowerId(),
-                                                    power.getPowerName(),
-                                                    power.getPowerDamage(),
-                                                    power.getPowerEnergyConsumed(),
-                                                    power.getPowerDescription()
-                                            )
-                                    ).toList(),
-                                    new BreedWarriorResponseDTO(
-                                            warrior.getBreedWarrior().getBreedId(),
-                                            warrior.getBreedWarrior().getBreedName(),
-                                            warrior.getBreedWarrior().getBreedDescription(),
-                                            warrior.getBreedWarrior().getBreedResistance()
-                                    )
-                            )
-                    ).toList(),
-                    new UserResponseDTO(
-                            player.getUser().getUserId(),
-                            player.getUser().getEmail(),
-                            player.getUser().getPassword(),
-                            new UserStatusResponseDTO(
-                                    player.getUser().getUserStatus().getId(),
-                                    player.getUser().getUserStatus().getName(),
-                                    player.getUser().getUserStatus().getDescription()
-                            ),
-                            new RoleResponseDTO(
-                                    player.getUser().getRole().getId(),
-                                    player.getUser().getRole().getName(),
-                                    player.getUser().getRole().getDescription()
-                            )
-                    )
+                player -> new PlayerResponseDTO(
+                        player.getPlayerId(),
+                        player.getNickname(),
+                        player.getWarriorsSelected().stream().map(
+                                warrior -> new WarriorResponseDTO(
+                                        warrior.getWarriorId(),
+                                        warrior.getWarriorName(),
+                                        warrior.getWarriorLife(),
+                                        warrior.getWarriorEnergy(),
+                                        new TypeWarriorResponseDTO(
+                                                warrior.getTypeOfWarrior().getTypeWarriorId(),
+                                                warrior.getTypeOfWarrior().getTypeWarriorName(),
+                                                warrior.getTypeOfWarrior().getTypeWarriorDescription()
+                                        ),
+                                        warrior.getTypeOfPower().stream().map(
+                                                power -> new TypePowerResponseDTO(
+                                                        power.getPowerId(),
+                                                        power.getPowerName(),
+                                                        power.getPowerDamage(),
+                                                        power.getPowerEnergyConsumed(),
+                                                        power.getPowerDescription()
+                                                )
+                                        ).toList(),
+                                        new BreedWarriorResponseDTO(
+                                                warrior.getBreedWarrior().getBreedId(),
+                                                warrior.getBreedWarrior().getBreedName(),
+                                                warrior.getBreedWarrior().getBreedDescription(),
+                                                warrior.getBreedWarrior().getBreedResistance()
+                                        )
+                                )
+                        ).toList(),
+                        new UserResponseDTO(
+                                player.getUser().getUserId(),
+                                player.getUser().getEmail(),
+                                player.getUser().getPassword(),
+                                new UserStatusResponseDTO(
+                                        player.getUser().getUserStatus().getId(),
+                                        player.getUser().getUserStatus().getName(),
+                                        player.getUser().getUserStatus().getDescription()
+                                ),
+                                new RoleResponseDTO(
+                                        player.getUser().getRole().getId(),
+                                        player.getUser().getRole().getName(),
+                                        player.getUser().getRole().getDescription()
+                                )
+                        ),
+                        player.getPoints(),
+                        player.getGamesWon(),
+                        player.getGamesLost()
                 )
-            );
+        );
     }
 
     @Override
@@ -192,7 +198,10 @@ public class PlayerService implements IPlayerService {
                                         player.getUser().getRole().getName(),
                                         player.getUser().getRole().getDescription()
                                 )
-                        )
+                        ),
+                        player.getPoints(),
+                        player.getGamesWon(),
+                        player.getGamesLost()
                 )
         );
     }
@@ -205,6 +214,65 @@ public class PlayerService implements IPlayerService {
 
         return findPlayerById(playerId);
     }
+
+    @Override
+    public Page<PlayerResponseDTO> findPlayersOrderByPoints(Pageable pageable) {
+        Page<Player> playersFounded = playerRepository.findAllByOrderByPointsDesc(pageable);
+
+        return playersFounded.map(
+                player -> new PlayerResponseDTO(
+                        player.getPlayerId(),
+                        player.getNickname(),
+                        player.getWarriorsSelected().stream().map(
+                                warrior -> new WarriorResponseDTO(
+                                        warrior.getWarriorId(),
+                                        warrior.getWarriorName(),
+                                        warrior.getWarriorLife(),
+                                        warrior.getWarriorEnergy(),
+                                        new TypeWarriorResponseDTO(
+                                                warrior.getTypeOfWarrior().getTypeWarriorId(),
+                                                warrior.getTypeOfWarrior().getTypeWarriorName(),
+                                                warrior.getTypeOfWarrior().getTypeWarriorDescription()
+                                        ),
+                                        warrior.getTypeOfPower().stream().map(
+                                                power -> new TypePowerResponseDTO(
+                                                        power.getPowerId(),
+                                                        power.getPowerName(),
+                                                        power.getPowerDamage(),
+                                                        power.getPowerEnergyConsumed(),
+                                                        power.getPowerDescription()
+                                                )
+                                        ).toList(),
+                                        new BreedWarriorResponseDTO(
+                                                warrior.getBreedWarrior().getBreedId(),
+                                                warrior.getBreedWarrior().getBreedName(),
+                                                warrior.getBreedWarrior().getBreedDescription(),
+                                                warrior.getBreedWarrior().getBreedResistance()
+                                        )
+                                )
+                        ).toList(),
+                        new UserResponseDTO(
+                                player.getUser().getUserId(),
+                                player.getUser().getEmail(),
+                                player.getUser().getPassword(),
+                                new UserStatusResponseDTO(
+                                        player.getUser().getUserStatus().getId(),
+                                        player.getUser().getUserStatus().getName(),
+                                        player.getUser().getUserStatus().getDescription()
+                                ),
+                                new RoleResponseDTO(
+                                        player.getUser().getRole().getId(),
+                                        player.getUser().getRole().getName(),
+                                        player.getUser().getRole().getDescription()
+                                )
+                        ),
+                        player.getPoints(),
+                        player.getGamesWon(),
+                        player.getGamesLost()
+                )
+        );
+    }
+
 
     @Transactional
     @Override
@@ -221,6 +289,7 @@ public class PlayerService implements IPlayerService {
                         () -> new EntityNotFoundException("User with ID: "+newPlayer.getUserId()+" not found")
                 )
         );
+        playerToAdd.setPoints(0);
 
         playerRepository.save(playerToAdd);
 
@@ -269,7 +338,10 @@ public class PlayerService implements IPlayerService {
                                 playerToAdd.getUser().getRole().getName(),
                                 playerToAdd.getUser().getRole().getDescription()
                         )
-                )
+                ),
+                playerToAdd.getPoints(),
+                playerToAdd.getGamesWon(),
+                playerToAdd.getGamesLost()
         );
     }
 
@@ -341,11 +413,14 @@ public class PlayerService implements IPlayerService {
                                 playerFounded.getUser().getRole().getName(),
                                 playerFounded.getUser().getRole().getDescription()
                         )
-                )
+                ),
+                playerFounded.getPoints(),
+                playerFounded.getGamesWon(),
+                playerFounded.getGamesLost()
         );
-
-
     }
+
+
 
     @Override
     public Boolean deletePlayer(Integer playerId) {

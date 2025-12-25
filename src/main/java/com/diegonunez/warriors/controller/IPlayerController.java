@@ -14,6 +14,7 @@ public interface IPlayerController {
     ResponseEntity<ApiResponse<PlayerResponseDTO>> getPlayerById(Integer playerId);
     ResponseEntity<ApiResponse<PageResponse<PlayerResponseDTO>>> getAllPlayers(Pageable pageable, String nickname);
     ResponseEntity<ApiResponse<PlayerResponseDTO>> getPlayerByUserId(Integer userId);
+    ResponseEntity<ApiResponse<PageResponse<PlayerResponseDTO>>> getPlayersOrderByPoints(Pageable pageable);
     ResponseEntity<ApiResponse<PlayerResponseDTO>> createPlayer(PlayerRequestDTO newPlayer);
     ResponseEntity<ApiResponse<PlayerResponseDTO>> updatePlayer(Integer playerId, PlayerRequestDTO playerUpdated);
     ResponseEntity<ApiResponse<Boolean>> deletePlayer(Integer playerId);

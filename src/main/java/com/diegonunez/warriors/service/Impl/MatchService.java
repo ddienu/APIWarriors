@@ -192,6 +192,9 @@ public class MatchService implements IMatchService {
     @Override
     public MatchResponseDTO simulateBattle(MatchRequestWinnerDTO matchPayload) {
 
+        Integer pointsForWinner = 3;
+        Integer pointsForLoser = 1;
+
         Match matchFounded = matchRepository.findById(matchPayload.getMatchId()).orElseThrow(
                 () -> new EntityNotFoundException("Match with ID: "+matchPayload.getMatchId()+" not found")
         );
@@ -208,8 +211,16 @@ public class MatchService implements IMatchService {
         Integer playerWinnerId = generateRandomWinner(playerOne.getPlayerId(), playerTwo.getPlayerId());
         if(playerWinnerId.equals(playerOne.getPlayerId())){
             matchFounded.setWinner(playerOne);
+            playerOne.setPoints(playerOne.getPoints() + pointsForWinner);
+            playerTwo.setPoints(playerTwo.getPoints() + pointsForLoser);
+            playerOne.setGamesWon(playerOne.getGamesWon() + 1);
+            playerTwo.setGamesLost(playerTwo.getGamesLost() + 1);
         }else{
             matchFounded.setWinner(playerTwo);
+            playerTwo.setPoints(playerTwo.getPoints() + pointsForWinner);
+            playerOne.setPoints(playerOne.getPoints() + pointsForLoser);
+            playerTwo.setGamesWon(playerTwo.getGamesWon() + 1);
+            playerOne.setGamesLost(playerOne.getGamesLost() + 1);
         }
 
         matchRepository.save(matchFounded);
