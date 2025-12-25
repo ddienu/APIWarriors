@@ -54,6 +54,7 @@ public class UserController implements IUserController {
     public ResponseEntity<ApiResponse<UserResponseDTO>> createUser(@Valid @RequestBody UserRequestDTO newUser) {
         UserResponseDTO serviceResponse = userService.createUser(newUser);
 
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ApiResponse<>(
                         "User created successfully",
